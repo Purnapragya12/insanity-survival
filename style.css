@@ -110,6 +110,34 @@ transform:scale(1.1);
 
 }
 
+#instructions{
+
+margin-top:20px;
+
+text-align:center;
+
+color:#cbd5f5;
+
+font-size:18px;
+
+line-height:28px;
+
+opacity:.9;
+
+}
+
+.challenge{
+
+margin-top:10px;
+
+color:#ef4444;
+
+font-weight:bold;
+
+text-shadow:0 0 10px #ef4444;
+
+}
+
 /* Game over */
 
 #gameOver{
