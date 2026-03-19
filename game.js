@@ -7,16 +7,25 @@ canvas.height=window.innerHeight
 
 let player
 let enemies=[]
-let score=0
-let best=localStorage.getItem("best") || 0
-let difficulty=1
+
 let running=false
+
+let startTime=0
+let survivalTime=0
+
+let bestTime=localStorage.getItem("bestTime") || 0
+
+let difficulty=1
+
+let keys={}
 
 function startGame(){
 
 document.getElementById("menu").style.display="none"
 
 init()
+
+startTime=Date.now()
 
 running=true
 
@@ -38,15 +47,13 @@ x:canvas.width/2,
 
 y:canvas.height/2,
 
-size:18,
+size:16,
 
 speed:7
 
 }
 
 }
-
-let keys={}
 
 document.addEventListener("keydown",e=>{
 
@@ -63,6 +70,7 @@ keys[e.key]=false
 canvas.addEventListener("touchmove",e=>{
 
 player.x=e.touches[0].clientX
+
 player.y=e.touches[0].clientY
 
 })
@@ -73,9 +81,9 @@ let side=Math.floor(Math.random()*4)
 
 let e={
 
-size:20,
+size:18,
 
-speed:3+difficulty
+speed:2.5+difficulty
 
 }
 
@@ -117,11 +125,11 @@ if(running){
 
 spawnEnemy()
 
-difficulty+=0.03
+difficulty+=0.04
 
 }
 
-},800)
+},700)
 
 function movePlayer(){
 
@@ -137,7 +145,7 @@ if(keys["ArrowDown"]) player.y+=player.speed
 
 function drawPlayer(){
 
-ctx.fillStyle="lime"
+ctx.fillStyle="#22c55e"
 
 ctx.beginPath()
 
@@ -149,7 +157,7 @@ ctx.fill()
 
 function drawEnemies(){
 
-ctx.fillStyle="red"
+ctx.fillStyle="#ef4444"
 
 enemies.forEach((e,i)=>{
 
@@ -169,9 +177,9 @@ gameOver()
 
 }
 
-if(dist<60){
+if(dist<55){
 
-score+=2
+survivalTime+=0.02
 
 }
 
@@ -179,19 +187,49 @@ score+=2
 
 }
 
+function difficultyVisuals(){
+
+if(survivalTime>20){
+
+document.body.style.background="#100000"
+
+}
+
+if(survivalTime>40){
+
+document.body.style.background="#1a0000"
+
+}
+
+if(survivalTime>60){
+
+document.body.style.background="#2b0000"
+
+}
+
+if(survivalTime>80){
+
+document.body.style.background="#3d0000"
+
+}
+
+}
+
 function gameOver(){
 
 running=false
 
-if(score>best){
+if(survivalTime>bestTime){
 
-localStorage.setItem("best",score)
+bestTime=survivalTime.toFixed(1)
+
+localStorage.setItem("bestTime",bestTime)
 
 }
 
 document.getElementById("finalScore").innerHTML=
 
-"Score : "+score+"<br>Best : "+best
+"Time : "+survivalTime.toFixed(1)+"s<br>Best : "+bestTime+"s"
 
 document.getElementById("gameOver").style.display="block"
 
@@ -209,11 +247,13 @@ drawPlayer()
 
 drawEnemies()
 
-score++
+survivalTime=(Date.now()-startTime)/1000
+
+difficultyVisuals()
 
 document.getElementById("score").innerText=
 
-"Score: "+score
+"Time: "+survivalTime.toFixed(1)+"s"
 
 requestAnimationFrame(update)
 
